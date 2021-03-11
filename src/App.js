@@ -7,6 +7,8 @@ import Auth from "./Auth/Auth";
 import Callback from "./Callback";
 import Public from "./Public";
 import Private from "./Private";
+import Courses from "./Courses";
+import PrivateRoute from "./PrivateRoute";
 
 const App = ({ history }) => {
   const auth = new Auth(history);
@@ -23,26 +25,14 @@ const App = ({ history }) => {
           path="/callback"
           render={(props) => <Callback auth={auth} {...props} />}
         />
-        <Route
-          path="/profile"
-          render={(props) =>
-            auth.isAuthenticated() ? (
-              <Profile auth={auth} {...props} />
-            ) : (
-              <Redirect to="/" />
-            )
-          }
-        />
+        <PrivateRoute path="/profile" Component={Profile} auth={auth} />
         <Route path="/public" component={Public} />
-        <Route
-          path="/private"
-          render={(props) =>
-            auth.isAuthenticated() ? (
-              <Private auth={auth} {...props} />
-            ) : (
-              auth.login()
-            )
-          }
+        <PrivateRoute path="/private" Component={Private} auth={auth} />
+        <PrivateRoute
+          path="/courses"
+          Component={Courses}
+          auth={auth}
+          scopes={["read:courses"]}
         />
       </div>
     </>

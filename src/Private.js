@@ -18,7 +18,7 @@ const Private = ({ auth }) => {
         }
       })
       .then((response) => setMessage(response.message))
-      .catch((error) => setMessage(error));
+      .catch((error) => setMessage(error.error));
   });
 
   return <p>{message}</p>;
