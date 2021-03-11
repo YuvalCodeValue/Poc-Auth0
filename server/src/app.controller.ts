@@ -16,6 +16,7 @@ export class AppController {
   @UseGuards(AuthGuard('jwt'))
   @Get('private')
   async findl(@Req() req): Promise<any> {
+    debugger;
     console.log(req.headers);
     return this.appService.findAll();
   }
