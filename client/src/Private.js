@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 
 const Private = ({ auth }) => {
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState([]);
   const { getAccessToken } = auth;
 
   useEffect(() => {
-    fetch("/private", {
+    fetch("http://localhost:7000/private", {
       headers: {
         Authorization: `Bearer ${getAccessToken()}`,
       },
@@ -17,11 +17,17 @@ const Private = ({ auth }) => {
           throw new Error("Network response was not ok.");
         }
       })
-      .then((response) => setMessage(response.message))
-      .catch((error) => setMessage(error.error));
-  });
+      .then((response) => setMessage(response))
+      .catch((error) => setMessage(error));
+  }, []);
 
-  return <p>{message}</p>;
+  return (
+    <div>
+      {message.map((item) => (
+        <p key={item.id}>{item.name}</p>
+      ))}
+    </div>
+  );
 };
 
 export default Private;
