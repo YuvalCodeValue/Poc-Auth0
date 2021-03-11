@@ -1,5 +1,5 @@
-import React from "react";
-import { Route, Redirect } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Route } from "react-router-dom";
 import Home from "./Home";
 import Profile from "./Profile";
 import Nav from "./Nav";
@@ -7,11 +7,22 @@ import Auth from "./Auth/Auth";
 import Callback from "./Callback";
 import Public from "./Public";
 import Private from "./Private";
+import Courses from "./Courses";
+import PrivateRoute from "./PrivateRoute";
+import AuthContext from "./AuthContext";
 
 const App = ({ history }) => {
-  const auth = new Auth(history);
-  return (
-    <>
+  const [auth, setAuth] = useState(new Auth(history));
+  const [tokenRenewalComplete, setTokenRenewalComplete] = useState(false);
+
+  useEffect(() => {
+    auth.renewToken(() => {
+      setTokenRenewalComplete(true);
+    });
+  }, []);
+
+  return tokenRenewalComplete ? (
+    <AuthContext.Provider value={auth}>
       <Nav auth={auth} />
       <div className="body">
         <Route
@@ -23,29 +34,18 @@ const App = ({ history }) => {
           path="/callback"
           render={(props) => <Callback auth={auth} {...props} />}
         />
-        <Route
-          path="/profile"
-          render={(props) =>
-            auth.isAuthenticated() ? (
-              <Profile auth={auth} {...props} />
-            ) : (
-              <Redirect to="/" />
-            )
-          }
-        />
+        <PrivateRoute path="/profile" Component={Profile} />
         <Route path="/public" component={Public} />
-        <Route
-          path="/private"
-          render={(props) =>
-            auth.isAuthenticated() ? (
-              <Private auth={auth} {...props} />
-            ) : (
-              auth.login()
-            )
-          }
+        <PrivateRoute path="/private" Component={Private} />
+        <PrivateRoute
+          path="/courses"
+          Component={Courses}
+          scopes={["read:courses"]}
         />
       </div>
-    </>
+    </AuthContext.Provider>
+  ) : (
+    "Loading..."
   );
 };
 
