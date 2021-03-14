@@ -1,7 +1,17 @@
-import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AppService } from './app.service';
-import { JwtAuthGuard } from './auth.guard';
+import { Permissions } from './permissions.decorator';
+import { PermissionsGuard } from './permissions.guard';
+import { Scopes } from './scopes.decorator';
 
 @Controller()
 export class AppController {
@@ -13,10 +23,11 @@ export class AppController {
     return this.appService.findAll();
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), PermissionsGuard)
   @Get('private')
+  @Permissions('read:items')
+  @Scopes('email')
   async findl(@Req() req): Promise<any> {
-    debugger;
     console.log(req.headers);
     return this.appService.findAll();
   }

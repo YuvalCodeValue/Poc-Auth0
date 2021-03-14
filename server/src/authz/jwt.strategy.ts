@@ -24,7 +24,8 @@ export class JwtService extends PassportStrategy(Strategy) {
     });
   }
 
-  validate(payload: unknown): unknown {
+  validate(payload: any): unknown {
+    delete payload.permissions[0];
     return payload;
   }
 }

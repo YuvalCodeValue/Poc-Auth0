@@ -21,13 +21,17 @@ const Private = ({ auth }) => {
       .catch((error) => setMessage(error));
   }, []);
 
-  return (
-    <div>
-      {message.map((item) => (
-        <p key={item.id}>{item.name}</p>
-      ))}
-    </div>
-  );
+  if (!message.message) {
+    return (
+      <div>
+        {message.map((item) => (
+          <p key={item.id}>{item.name}</p>
+        ))}
+      </div>
+    );
+  } else {
+    return <div>{message.message}</div>;
+  }
 };
 
 export default Private;
