@@ -5,7 +5,7 @@ export class AppService {
   data = [
     { name: 'sd', id: 'don' },
     { name: 'sdd', id: 'moshe' },
-    { name: 'ssd', id: 'glaser' },s
+    { name: 'ssd', id: 'glaser' },
   ];
 
   findAll(): any {
